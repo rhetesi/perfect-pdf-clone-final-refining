@@ -1,12 +1,18 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import TalaltTargyLap from "@/components/TalaltTargyLap";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-muted flex items-center justify-center p-4 print:p-0 print:bg-white">
+      <TalaltTargyLap
+        targyNev="Férfi karóra"
+        targyLeiras="Casio (fém, ezüst, kerek)"
+        helyszin="Főbejárat aula"
+        datum="2026. 01. 29."
+        azonosito="697B781F52740ECF"
+        nyomtatasDatum="2026. 01. 31."
+        talaloNev="Név"
+        talaloLakcim="lakcím"
+      />
     </div>
   );
 };

@@ -175,10 +175,6 @@ const TalaltTargyLap = ({
           </div>
         </div>
 
-        {/* Lábléc */}
-        <div className="footer-line">
-          {datum} • {targyNev} • {azonosito}
-        </div>
       </div>
     </div>
   );

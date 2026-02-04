@@ -64,8 +64,8 @@ const TalaltTargyLap = ({
           </div>
         </div>
 
-        {/* Fő tartalom - sidebar-tól balra */}
-        <div className="pr-[22mm]">
+        {/* Fő tartalom - teljes szélesség */}
+        <div>
           {/* Fejléc */}
           <div className="flex justify-between items-start mb-4">
             <div>
@@ -127,8 +127,10 @@ const TalaltTargyLap = ({
           </div>
 
           {/* Második aláírás sor */}
-          <div className="signature-row-two">
-            <p className="text-body">{datum}</p>
+          <div className="signature-row-three">
+            <div className="signature-block">
+              <p className="text-body">{datum}</p>
+            </div>
             <div className="signature-block">
               <div className="signature-line" />
               <p className="signature-label">átadó</p>

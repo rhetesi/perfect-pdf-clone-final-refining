@@ -85,7 +85,7 @@
     @apply bg-background text-foreground;
     width: 210mm;
     min-height: 297mm;
-    padding: 15mm 20mm;
+    padding: 6mm 20mm 15mm 20mm;
     font-family: 'Roboto', sans-serif;
     font-size: 10pt;
     line-height: 1.3;
@@ -244,11 +244,11 @@
   }
 
   .signature-row-three .signature-block:first-child {
-    margin-left: calc(40mm - 17.5mm); /* 60mm lap szélétől - 20mm margó - fél blokk = 22.5mm */
+    margin-left: calc(30mm - 17.5mm); /* 50mm lap szélétől - 20mm margó - fél blokk = 12.5mm */
   }
 
   .signature-row-three .signature-block:last-child {
-    margin-right: calc(35mm - 17.5mm); /* 35mm - fél blokk szélesség */
+    margin-right: calc(30mm - 17.5mm); /* 50mm lap szélétől - 20mm margó - fél blokk = 12.5mm */
   }
 
   .signature-row-two {
@@ -263,11 +263,11 @@
   }
 
   .signature-row-two .signature-block:first-child {
-    margin-left: calc(40mm - 17.5mm); /* 60mm lap szélétől - 20mm margó - fél blokk = 22.5mm */
+    margin-left: calc(30mm - 17.5mm); /* 50mm lap szélétől - 20mm margó - fél blokk = 12.5mm */
   }
 
   .signature-row-two .signature-block:last-child {
-    margin-right: calc(35mm - 17.5mm);
+    margin-right: calc(30mm - 17.5mm); /* 50mm lap szélétől - 20mm margó - fél blokk = 12.5mm */
   }
 
   /* Lábléc */

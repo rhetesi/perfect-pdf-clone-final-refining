@@ -244,7 +244,7 @@
   }
 
   .signature-row-three .signature-block:first-child {
-    margin-left: calc(35mm - 17.5mm); /* 35mm - fél blokk szélesség */
+    margin-left: calc(40mm - 17.5mm); /* 60mm lap szélétől - 20mm margó - fél blokk = 22.5mm */
   }
 
   .signature-row-three .signature-block:last-child {
@@ -263,7 +263,7 @@
   }
 
   .signature-row-two .signature-block:first-child {
-    margin-left: calc(35mm - 17.5mm);
+    margin-left: calc(40mm - 17.5mm); /* 60mm lap szélétől - 20mm margó - fél blokk = 22.5mm */
   }
 
   .signature-row-two .signature-block:last-child {

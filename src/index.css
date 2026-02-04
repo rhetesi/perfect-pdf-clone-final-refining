@@ -233,14 +233,41 @@
   .signature-row-three {
     display: flex;
     justify-content: space-between;
-    padding: 0 35mm; /* 3,5 cm margótól befelé */
+    /* A4 tartalom szélessége: 170mm (210mm - 2x20mm margó) */
+    /* Bal pozíció: 35mm (közép), Jobb pozíció: 170mm - 35mm = 135mm (közép) */
+    /* Középső pozíció: 85mm (közép) */
+    padding: 0;
+  }
+
+  .signature-row-three .signature-block {
+    width: 35mm; /* Fix szélesség a blokkok számára */
+  }
+
+  .signature-row-three .signature-block:first-child {
+    margin-left: calc(35mm - 17.5mm); /* 35mm - fél blokk szélesség */
+  }
+
+  .signature-row-three .signature-block:last-child {
+    margin-right: calc(35mm - 17.5mm); /* 35mm - fél blokk szélesség */
   }
 
   .signature-row-two {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    padding: 0 35mm; /* 3,5 cm margótól befelé */
+    padding: 0;
+  }
+
+  .signature-row-two .signature-block {
+    width: 35mm;
+  }
+
+  .signature-row-two .signature-block:first-child {
+    margin-left: calc(35mm - 17.5mm);
+  }
+
+  .signature-row-two .signature-block:last-child {
+    margin-right: calc(35mm - 17.5mm);
   }
 
   /* Lábléc */

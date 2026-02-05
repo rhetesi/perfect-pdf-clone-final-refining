@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
+ import { addRobotoFonts } from './fonts';
 
 interface TalaltTargyLapData {
   targyNev: string;
@@ -40,6 +41,9 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
     format: 'a4',
   });
 
+   // Add Roboto fonts
+   await addRobotoFonts(doc);
+ 
   // Page dimensions
   const pageWidth = 210;
   const marginLeft = 20;
@@ -71,11 +75,11 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
 
   // === SECTION 1: Label with QR code ===
   doc.setFontSize(18);
-  doc.setFont('helvetica', 'bolditalic');
+   doc.setFont('Roboto', 'bolditalic');
   doc.text(targyNev, marginLeft, y + 6);
   
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
   doc.text(targyLeiras, marginLeft, y + 11);
   doc.text(fullDatum, marginLeft, y + 15);
 
@@ -100,11 +104,11 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
   
   // Header
   doc.setFontSize(18);
-  doc.setFont('helvetica', 'bolditalic');
+   doc.setFont('Roboto', 'bolditalic');
   doc.text(targyNev, marginLeft, y + 6);
   
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
   doc.text(targyLeiras, marginLeft, y + 11);
   doc.text(fullDatum, marginLeft, y + 15);
 
@@ -118,10 +122,10 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
   doc.setFillColor(0, 0, 0);
   doc.rect(masodlatX, y + 6, masodlatWidth, 5, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
+   doc.setFont('Roboto', 'bold');
   doc.text(masodlatText, masodlatX + 3, y + 9.5);
   doc.setTextColor(0, 0, 0);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
   
   // Print date
   doc.setFontSize(9);
@@ -170,9 +174,9 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
 
   // Finder declaration
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
+   doc.setFont('Roboto', 'bold');
   doc.text(`${talaloNev} (${talaloLakcim})`, marginLeft, y);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
   
   y += 5;
   const finderDeclaration = `mint találó kijelentem, hogy az általam talált fent megjelölt tárgy NEM tartozik a személyes és közeli hozzátartozóim tulajdona körébe, így annak tulajdonjogára sem most, sem később nem tartok igényt. Egyben kijelentem, hogy megértettem és tudomásul veszem, hogy az átvételi elismervényen található figyelmeztetés szerint az átvételi elismervény nem jogosít a talált tárgy kiadására.`;
@@ -204,7 +208,7 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
   // Sidebar text (rotated)
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);
-  doc.setFont('helvetica', 'bold');
+   doc.setFont('Roboto', 'bold');
   
   // Save current state and rotate for sidebar text
   const sidebarCenterX = sidebarX + sidebarWidth / 2;
@@ -224,7 +228,7 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
   doc.text('•', sidebarCenterX, section2End, { align: 'center', angle: 90 });
   
   doc.setTextColor(0, 0, 0);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
 
   y = section2End + 2;
 
@@ -234,22 +238,22 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
 
   // === SECTION 3: Receipt (bottom section) ===
   doc.setFontSize(18);
-  doc.setFont('helvetica', 'bolditalic');
+   doc.setFont('Roboto', 'bolditalic');
   doc.text('Átvételi elismervény', marginLeft, y + 5);
   
   y += 12;
   
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
+   doc.setFont('Roboto', 'bold');
   doc.text(targyNev, marginLeft, y);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
   doc.text(targyLeiras, marginLeft, y + 4);
 
   y += 10;
   
-  doc.setFont('helvetica', 'bold');
+   doc.setFont('Roboto', 'bold');
   doc.text(`${talaloNev} (${talaloLakcim})`, marginLeft, y);
-  doc.setFont('helvetica', 'normal');
+   doc.setFont('Roboto', 'normal');
 
   y += 5;
   

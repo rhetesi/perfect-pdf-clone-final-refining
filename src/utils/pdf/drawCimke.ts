@@ -2,7 +2,8 @@ import { jsPDF } from 'jspdf';
 import { TalaltTargyLapData, PdfLayout } from './types';
 
 /**
- * 1. rész: Nyilvántartó címke QR kóddal (felső rész)
+ * 1. rész: Nyilvántartó címke QR kóddal
+ * Függőleges pozíció: 6mm - 35mm (29mm magas terület)
  */
 export const drawCimke = (
   doc: jsPDF,
@@ -13,7 +14,7 @@ export const drawCimke = (
   const { targyNev, targyLeiras, helyszin, datum, azonosito } = data;
   const fullDatum = `${helyszin}, ${datum}`;
 
-  let y = 6; // Top margin 6mm
+  const y = layout.cimkeTop; // 6mm
 
   doc.setFontSize(18);
   doc.setFont('Roboto', 'bolditalic');

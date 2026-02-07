@@ -5,8 +5,8 @@ import { TalaltTargyLapData, createLayout, drawDashedLine } from './pdf/types';
 import { drawCimke } from './pdf/drawCimke';
 import { drawNyilvantartoLap } from './pdf/drawNyilvantartoLap';
 import { drawElismerveny } from './pdf/drawElismerveny';
-import { drawSidebar } from './pdf/drawSidebar';
-import { drawMasodlat } from './pdf/drawMasodlat';
+import { drawSidebar, createSidebarBox } from './pdf/drawSidebar';
+import { drawMasodlat, createMasodlatBox } from './pdf/drawMasodlat';
 
 export type { TalaltTargyLapData };
 
@@ -30,25 +30,27 @@ export const generateTalaltTargyPdf = async (data: TalaltTargyLapData): Promise<
   // Add Roboto fonts
   await addRobotoFonts(doc);
 
-  // 1. Nyilvántartó címke (felső rész)
+  // 1. Nyilvántartó címke (6mm - 35mm)
   drawCimke(doc, data, layout, qrDataUrl);
 
-  // Felső szaggatott elválasztó vonal (4,1 cm)
+  // Felső szaggatott elválasztó vonal (41mm)
   drawDashedLine(doc, layout, layout.topSeparatorY);
 
-  // 2. Nyilvántartási lap (középső rész)
+  // 2. Nyilvántartási lap (47mm - 210mm)
   drawNyilvantartoLap(doc, data, layout);
 
-  // 5. MÁSODLAT rész (a nyilvántartási lapon belül)
-  drawMasodlat(doc, data, layout);
+  // 4. Nyilvántartó függőleges sáv (virtuális dobozban)
+  const sidebarBox = createSidebarBox();
+  drawSidebar(doc, data, sidebarBox);
 
-  // 4. Nyilvántartó függőleges sáv
-  drawSidebar(doc, data, layout);
+  // 5. MÁSODLAT rész (virtuális dobozban)
+  const masodlatBox = createMasodlatBox();
+  drawMasodlat(doc, data, masodlatBox);
 
-  // Alsó szaggatott elválasztó vonal (21,6 cm)
+  // Alsó szaggatott elválasztó vonal (216mm)
   drawDashedLine(doc, layout, layout.bottomSeparatorY);
 
-  // 3. Átvételi elismervény (alsó rész)
+  // 3. Átvételi elismervény (222mm - 291mm)
   drawElismerveny(doc, data, layout);
 
   // Save PDF

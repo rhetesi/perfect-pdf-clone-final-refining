@@ -3,6 +3,7 @@ import { TalaltTargyLapData, PdfLayout, drawSolidLine } from './types';
 
 /**
  * 3. rész: Átvételi elismervény (alsó rész)
+ * Függőleges pozíció: 222mm - 291mm (69mm magas terület)
  */
 export const drawElismerveny = (
   doc: jsPDF,
@@ -17,7 +18,7 @@ export const drawElismerveny = (
     talaloLakcim = 'lakcím',
   } = data;
 
-  let y = layout.bottomSeparatorY + 6;
+  let y = layout.elismTop; // 222mm
 
   doc.setFontSize(18);
   doc.setFont('Roboto', 'bolditalic');
@@ -45,12 +46,12 @@ export const drawElismerveny = (
 
   y += splitReceipt.length * layout.lineHeight + 6;
 
-  // Bottom signature row
+  // Alsó aláírás sor
   doc.setFontSize(10);
   doc.setFont('Roboto', 'normal');
   doc.text(datum, layout.marginLeft, y);
 
-  // ph and signature on right
+  // ph és aláírás jobb oldalon
   doc.text('ph', layout.contentRight - 50, y);
   drawSolidLine(doc, layout.contentRight - 40, y, layout.contentRight);
   doc.setFontSize(9);

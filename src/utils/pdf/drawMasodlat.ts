@@ -1,32 +1,54 @@
 import { jsPDF } from 'jspdf';
-import { TalaltTargyLapData, PdfLayout } from './types';
+import { TalaltTargyLapData, PdfGroupBox, drawGroup } from './types';
 
 /**
- * 5. rész: MÁSODLAT rész (a nyilvántartási lap jobb felső sarkában)
+ * 5. rész: MÁSODLAT rész (bekeretezett szövegmező)
+ * Virtuális dobozban elhelyezve, így a pozíciója egyszerűen módosítható.
+ * Alapértelmezett pozíció: a nyilvántartási lap jobb felső sarka.
  */
+export const createMasodlatBox = (): PdfGroupBox => ({
+  startX: 140,
+  startY: 47,
+  width: 50,
+  height: 22,
+});
+
 export const drawMasodlat = (
   doc: jsPDF,
   data: TalaltTargyLapData,
-  layout: PdfLayout
+  box: PdfGroupBox
 ) => {
   const { azonosito, nyomtatasDatum } = data;
 
-  const y = layout.topSeparatorY + 6;
+  drawGroup(doc, box, (doc, offsetX, offsetY, width, height) => {
+    // Keret rajzolása a teljes doboz körül
+    doc.setDrawColor(150, 150, 150);
+    doc.setLineWidth(0.3);
+    doc.setLineDashPattern([1, 1], 0);
+    doc.rect(offsetX, offsetY, width, height);
+    doc.setLineDashPattern([], 0);
+    doc.setDrawColor(0, 0, 0);
 
-  // MÁSODLAT box
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(10);
-  const masodlatText = 'MÁSODLAT!';
-  const masodlatWidth = doc.getTextWidth(masodlatText) + 6;
-  const masodlatX = layout.mainContentRight - masodlatWidth;
-  doc.setFillColor(0, 0, 0);
-  doc.rect(masodlatX, y + 6, masodlatWidth, 5, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.text(masodlatText, masodlatX + 3, y + 9.5);
-  doc.setTextColor(0, 0, 0);
-  doc.setFont('Roboto', 'normal');
+    // MÁSODLAT! felirat (inverz: fekete háttér, fehér szöveg)
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(10);
+    const masodlatText = 'MÁSODLAT!';
+    const masodlatTextWidth = doc.getTextWidth(masodlatText) + 6;
+    const masodlatX = offsetX + width - masodlatTextWidth - 2;
+    const masodlatY = offsetY + 4;
+    doc.setFillColor(0, 0, 0);
+    doc.rect(masodlatX, masodlatY, masodlatTextWidth, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.text(masodlatText, masodlatX + 3, masodlatY + 3.5);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('Roboto', 'normal');
 
-  // Print date
-  doc.setFontSize(9);
-  doc.text(`Nyomtatva: ${nyomtatasDatum}`, layout.mainContentRight, y + 15, { align: 'right' });
+    // Nyomtatás dátuma
+    doc.setFontSize(9);
+    doc.text(`Nyomtatva: ${nyomtatasDatum}`, offsetX + width - 2, offsetY + 14, { align: 'right' });
+
+    // Azonosító
+    doc.setFontSize(9);
+    doc.text(azonosito, offsetX + width - 2, offsetY + 19, { align: 'right' });
+  });
 };

@@ -13,38 +13,74 @@ export interface TalaltTargyLapData {
 
 export interface PdfLayout {
   pageWidth: number;
+  pageHeight: number;
   marginLeft: number;
   marginRight: number;
   contentWidth: number;
   contentRight: number;
-  sidebarWidth: number;
-  mainContentRight: number;
   lineHeight: number;
-  topSeparatorY: number;   // 41mm
+  // Szaggatott vonalak pozíciói
+  topSeparatorY: number;    // 41mm
   bottomSeparatorY: number; // 216mm
+  // 1) Címke szekció
+  cimkeTop: number;         // 6mm
+  cimkeBottom: number;      // 35mm
+  // 2) Nyilvántartás szekció
+  nyilvTop: number;         // 47mm
+  nyilvBottom: number;      // 210mm
+  // 3) Elismervény szekció
+  elismTop: number;         // 222mm
+  elismBottom: number;      // 291mm
+}
+
+export interface PdfGroupBox {
+  startX: number;
+  startY: number;
+  width: number;
+  height: number;
 }
 
 export const createLayout = (): PdfLayout => {
   const pageWidth = 210;
+  const pageHeight = 297;
   const marginLeft = 20;
   const marginRight = 20;
   const contentWidth = pageWidth - marginLeft - marginRight;
   const contentRight = pageWidth - marginRight;
-  const sidebarWidth = 10;
-  const mainContentRight = contentRight - sidebarWidth - 2;
 
   return {
     pageWidth,
+    pageHeight,
     marginLeft,
     marginRight,
     contentWidth,
     contentRight,
-    sidebarWidth,
-    mainContentRight,
     lineHeight: 4,
+    // Szaggatott vonalak
     topSeparatorY: 41,
     bottomSeparatorY: 216,
+    // 1) Címke
+    cimkeTop: 6,
+    cimkeBottom: 35,
+    // 2) Nyilvántartás
+    nyilvTop: 47,
+    nyilvBottom: 210,
+    // 3) Elismervény
+    elismTop: 222,
+    elismBottom: 291,
   };
+};
+
+/**
+ * Virtuális doboz (group box) rajzoló segédfüggvény.
+ * Az összes elem pozíciója a doboz bal felső sarkához képest relatív.
+ */
+export const drawGroup = (
+  doc: jsPDF,
+  box: PdfGroupBox,
+  drawFn: (doc: jsPDF, offsetX: number, offsetY: number, width: number, height: number) => void
+) => {
+  drawFn(doc, box.startX, box.startY, box.width, box.height);
 };
 
 // Helper: draw dashed line

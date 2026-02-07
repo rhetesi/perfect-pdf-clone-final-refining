@@ -3,6 +3,8 @@ import { TalaltTargyLapData, PdfLayout, drawSolidLine } from './types';
 
 /**
  * 2. rész: Nyilvántartási lap (középső fő rész)
+ * Függőleges pozíció: 47mm - 210mm (163mm magas terület)
+ * Vízszintes: marginLeft - mainContentRight (a sidebar előtti terület)
  */
 export const drawNyilvantartoLap = (
   doc: jsPDF,
@@ -20,13 +22,16 @@ export const drawNyilvantartoLap = (
   } = data;
   const fullDatum = `${helyszin}, ${datum}`;
 
-  // Signature positions (from page left edge)
+  // A sidebar 194mm-nél kezdődik, tehát a fő tartalom jobb széle ~192mm
+  const mainContentRight = 192;
+
+  // Aláírás pozíciók (oldalszéltől mérve)
   const sig1Center = 50;
   const sig2Center = 107.5;
   const sig3Center = 160;
   const sigWidth = 35;
 
-  let y = layout.topSeparatorY + 6;
+  let y = layout.nyilvTop; // 47mm
 
   // Header
   doc.setFontSize(18);
@@ -38,41 +43,41 @@ export const drawNyilvantartoLap = (
   doc.text(targyLeiras, layout.marginLeft, y + 11);
   doc.text(fullDatum, layout.marginLeft, y + 15);
 
-  // Right side - identifier
+  // Jobb oldal - azonosító
   doc.setFontSize(10);
-  doc.text(azonosito, layout.mainContentRight, y + 4, { align: 'right' });
+  doc.text(azonosito, mainContentRight, y + 4, { align: 'right' });
 
   y += 22;
 
-  // Form fields
+  // Űrlapmezők
   doc.setFontSize(10);
   doc.setFont('Roboto', 'normal');
   doc.text('Átvevő neve:', layout.marginLeft, y);
-  drawSolidLine(doc, layout.marginLeft + 25, y, layout.mainContentRight);
+  drawSolidLine(doc, layout.marginLeft + 25, y, mainContentRight);
 
   y += 6;
   doc.text('Átvevő lakcíme:', layout.marginLeft, y);
-  drawSolidLine(doc, layout.marginLeft + 30, y, layout.mainContentRight);
+  drawSolidLine(doc, layout.marginLeft + 30, y, mainContentRight);
 
   y += 5;
-  drawSolidLine(doc, layout.marginLeft, y, layout.mainContentRight);
+  drawSolidLine(doc, layout.marginLeft, y, mainContentRight);
 
   y += 6;
   doc.text('Személyazonosító okmány típusa és azonosítója:', layout.marginLeft, y);
-  drawSolidLine(doc, layout.marginLeft + 85, y, layout.mainContentRight);
+  drawSolidLine(doc, layout.marginLeft + 85, y, mainContentRight);
 
   y += 8;
 
-  // Declaration text
+  // Nyilatkozat szöveg
   const declarationText = "Átvevő adatainál megjelölt személyként elismerem, hogy mai napon, a 'CÉG' képviselője, a megjelölt tárgyat, mint személyes tulajdonomat részemre átadta. A tárgyat megvizsgáltam, azzal kapcsolatban mennyiségi, minőségi kifogást nem támasztok a 'CÉG' felé, egyidejűleg elismerem, hogy általam történő elhagyása és megtalálása között a tárgy mennyiségi, minőségi változásaiért a 'CÉG' nem tartozik felelősséggel. Meggyőződtem arról, hogy a 'CÉG' a tárgyat annak megtalálásától az elvárható gondossággal őrizte meg.";
 
   doc.setFontSize(10);
   doc.setFont('Roboto', 'normal');
-  const splitDeclaration = doc.splitTextToSize(declarationText, layout.mainContentRight - layout.marginLeft);
+  const splitDeclaration = doc.splitTextToSize(declarationText, mainContentRight - layout.marginLeft);
   doc.text(splitDeclaration, layout.marginLeft, y);
   y += splitDeclaration.length * layout.lineHeight + 6;
 
-  // First signature row
+  // Első aláírás sor
   drawSolidLine(doc, sig1Center - sigWidth / 2, y, sig1Center + sigWidth / 2);
   doc.setFontSize(9);
   doc.text('dátum', sig1Center, y + 4, { align: 'center' });
@@ -85,7 +90,7 @@ export const drawNyilvantartoLap = (
 
   y += 12;
 
-  // Finder declaration (bold name + address)
+  // Találó nyilatkozat
   doc.setFontSize(10);
   doc.setFont('Roboto', 'bold');
   doc.text(`${talaloNev} (${talaloLakcim})`, layout.marginLeft, y);
@@ -94,11 +99,11 @@ export const drawNyilvantartoLap = (
   y += 5;
   const finderDeclaration = "mint találó kijelentem, hogy az általam talált fent megjelölt tárgy NEM tartozik a személyes és közeli hozzátartozóim tulajdona körébe, így annak tulajdonjogára sem most, sem később nem tartok igényt. Egyben kijelentem, hogy megértettem és tudomásul veszem, hogy az átvételi elismervényen található figyelmeztetés szerint az átvételi elismervény nem jogosít a talált tárgy kiadására.";
 
-  const splitFinderDecl = doc.splitTextToSize(finderDeclaration, layout.mainContentRight - layout.marginLeft);
+  const splitFinderDecl = doc.splitTextToSize(finderDeclaration, mainContentRight - layout.marginLeft);
   doc.text(splitFinderDecl, layout.marginLeft, y);
   y += splitFinderDecl.length * layout.lineHeight + 6;
 
-  // Second signature row
+  // Második aláírás sor
   doc.setFontSize(10);
   doc.setFont('Roboto', 'normal');
   doc.text(datum, sig1Center, y, { align: 'center' });

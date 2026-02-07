@@ -25,26 +25,16 @@ export const drawSidebar = (
     doc.setFillColor(0, 0, 0);
     doc.rect(offsetX, offsetY, width, height, 'F');
 
-    // Fehér szöveg, elforgatva
+    // Fehér szöveg, elforgatva - egyetlen összefűzött sor
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(9);
     doc.setFont('Roboto', 'bold');
 
-    const centerX = offsetX + width / 2;
+    const centerX = offsetX + width / 2 + 0.5;
     const midY = offsetY + height / 2;
 
-    // Felső pont és azonosító
-    doc.text('•', centerX, offsetY + 6, { align: 'center', angle: 90 });
-    doc.text(azonosito, centerX, offsetY + 10, { align: 'center', angle: 90 });
-
-    // Középen - tárgy neve
-    doc.setFontSize(12);
-    doc.text(targyNev, centerX, midY, { align: 'center', angle: 90 });
-
-    // Alul - dátum és pont
-    doc.setFontSize(9);
-    doc.text(datum, centerX, offsetY + height - 10, { align: 'center', angle: 90 });
-    doc.text('•', centerX, offsetY + height - 6, { align: 'center', angle: 90 });
+    const sidebarText = `${datum}  –  ${targyNev}  –  ${azonosito}`;
+    doc.text(sidebarText, centerX, midY, { align: 'center', angle: 90 });
 
     // Színek visszaállítása
     doc.setTextColor(0, 0, 0);

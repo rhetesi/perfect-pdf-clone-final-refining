@@ -30,11 +30,18 @@ export const drawSidebar = (
     doc.setFontSize(9);
     doc.setFont('Roboto', 'bold');
 
+    const sidebarText = `${datum}  –  ${targyNev}  –  ${azonosito}`;
+
+    // A szöveg szélességét kézzel számoljuk ki a függőleges középre igazításhoz,
+    // mert az align:'center' + angle:90 együtt hibásan tolja el az x koordinátát.
+    const textWidth = doc.getTextWidth(sidebarText);
     const centerX = offsetX + width / 2 + 0.5;
     const midY = offsetY + height / 2;
+    // 90° CCW forgatásnál a szöveg felfelé halad az anchor ponttól,
+    // ezért az anchor Y = közép + félszövegszélesség
+    const textY = midY + textWidth / 2;
 
-    const sidebarText = `${datum}  –  ${targyNev}  –  ${azonosito}`;
-    doc.text(sidebarText, centerX, midY, { align: 'center', angle: 90 });
+    doc.text(sidebarText, centerX, textY, { angle: 90 });
 
     // Színek visszaállítása
     doc.setTextColor(0, 0, 0);

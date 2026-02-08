@@ -49,6 +49,10 @@ export const drawNyilvantartoLap = (
 
   y += 22;
 
+  // Üres sorok beszúrása, hogy a "cég képviselője" aláírási sor
+  // 6 mm-rel az alsó szaggatott vonal (216mm) felett legyen → y=210mm
+  y += 42;
+
   // Űrlapmezők
   doc.setFontSize(10);
   doc.setFont('Roboto', 'normal');

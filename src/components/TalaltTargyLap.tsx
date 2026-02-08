@@ -52,15 +52,7 @@ const TalaltTargyLap = ({
         {/* Jobb oldali fekete sáv - csak ezen a szeleten belül */}
         <div className="sidebar-black">
           <div className="sidebar-text">
-            <span>•</span>
-            <span className="mx-2">{azonosito}</span>
-          </div>
-          <div className="sidebar-text sidebar-title">
-            {targyNev}
-          </div>
-          <div className="sidebar-text">
-            <span className="mx-2">{datum}</span>
-            <span>•</span>
+            {datum}  –  {targyNev}  –  {azonosito}
           </div>
         </div>
 

@@ -14,7 +14,7 @@ export const drawCimke = (
   const { targyNev, targyLeiras, helyszin, datum, azonosito } = data;
   const fullDatum = `${helyszin}, ${datum}`;
 
-  const y = layout.cimkeTop; // 6mm
+  const y = layout.cimkeTop + 5; // 6mm + 5mm lejjebb
 
   doc.setFontSize(18);
   doc.setFont('Roboto', 'bolditalic');

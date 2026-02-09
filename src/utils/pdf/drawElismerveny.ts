@@ -32,7 +32,7 @@ export const drawElismerveny = (
   doc.setFont('Roboto', 'normal');
   doc.text(targyLeiras, layout.marginLeft, y + 4);
 
-  y += 10;
+  y += 15;
 
   doc.setFont('Roboto', 'bold');
   doc.text(`${talaloNev} (${talaloLakcim})`, layout.marginLeft, y);

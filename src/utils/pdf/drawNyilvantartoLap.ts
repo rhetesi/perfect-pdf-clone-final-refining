@@ -51,7 +51,7 @@ export const drawNyilvantartoLap = (
 
   // Üres sorok beszúrása, hogy a "cég képviselője" aláírási sor
   // 6 mm-rel az alsó szaggatott vonal (216mm) felett legyen → y=210mm
-  y += 42;
+  y += 30;
 
   // Űrlapmezők
   doc.setFontSize(10);
@@ -59,26 +59,27 @@ export const drawNyilvantartoLap = (
   doc.text('Átvevő neve:', layout.marginLeft, y);
   drawSolidLine(doc, layout.marginLeft + 25, y, mainContentRight);
 
-  y += 6;
+  y += 8;
   doc.text('Átvevő lakcíme:', layout.marginLeft, y);
   drawSolidLine(doc, layout.marginLeft + 30, y, mainContentRight);
 
-  y += 5;
+  y += 7;
   drawSolidLine(doc, layout.marginLeft, y, mainContentRight);
 
-  y += 6;
+  y += 8;
   doc.text('Személyazonosító okmány típusa és azonosítója:', layout.marginLeft, y);
   drawSolidLine(doc, layout.marginLeft + 85, y, mainContentRight);
 
   y += 8;
 
-  // Nyilatkozat szöveg
+  // Nyilatkozat szöveg (sorkizárt)
   const declarationText = "Átvevő adatainál megjelölt személyként elismerem, hogy mai napon, a 'CÉG' képviselője, a megjelölt tárgyat, mint személyes tulajdonomat részemre átadta. A tárgyat megvizsgáltam, azzal kapcsolatban mennyiségi, minőségi kifogást nem támasztok a 'CÉG' felé, egyidejűleg elismerem, hogy általam történő elhagyása és megtalálása között a tárgy mennyiségi, minőségi változásaiért a 'CÉG' nem tartozik felelősséggel. Meggyőződtem arról, hogy a 'CÉG' a tárgyat annak megtalálásától az elvárható gondossággal őrizte meg.";
 
   doc.setFontSize(10);
   doc.setFont('Roboto', 'normal');
-  const splitDeclaration = doc.splitTextToSize(declarationText, mainContentRight - layout.marginLeft);
-  doc.text(splitDeclaration, layout.marginLeft, y);
+  const maxWidth = mainContentRight - layout.marginLeft;
+  const splitDeclaration = doc.splitTextToSize(declarationText, maxWidth);
+  doc.text(splitDeclaration, layout.marginLeft, y, { align: 'justify', maxWidth });
   y += splitDeclaration.length * layout.lineHeight + 6;
 
   // Első aláírás sor
@@ -94,6 +95,9 @@ export const drawNyilvantartoLap = (
 
   y += 12;
 
+  // Üres sor a találó nyilatkozat előtt
+  y += 5;
+
   // Találó nyilatkozat
   doc.setFontSize(10);
   doc.setFont('Roboto', 'bold');
@@ -103,8 +107,8 @@ export const drawNyilvantartoLap = (
   y += 5;
   const finderDeclaration = "mint találó kijelentem, hogy az általam talált fent megjelölt tárgy NEM tartozik a személyes és közeli hozzátartozóim tulajdona körébe, így annak tulajdonjogára sem most, sem később nem tartok igényt. Egyben kijelentem, hogy megértettem és tudomásul veszem, hogy az átvételi elismervényen található figyelmeztetés szerint az átvételi elismervény nem jogosít a talált tárgy kiadására.";
 
-  const splitFinderDecl = doc.splitTextToSize(finderDeclaration, mainContentRight - layout.marginLeft);
-  doc.text(splitFinderDecl, layout.marginLeft, y);
+  const splitFinderDecl = doc.splitTextToSize(finderDeclaration, maxWidth);
+  doc.text(splitFinderDecl, layout.marginLeft, y, { align: 'justify', maxWidth });
   y += splitFinderDecl.length * layout.lineHeight + 6;
 
   // Második aláírás sor

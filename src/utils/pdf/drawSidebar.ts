@@ -20,7 +20,7 @@ export const drawSidebar = (
   const barLength = cm(17);
 
   // Draw black bar
-  doc.setFillColor(0);
+  doc.setFillColor(0, 0, 0);
   doc.rect(barX, barY, barThickness, barLength, 'F');
 
   // White text, rotated 90°

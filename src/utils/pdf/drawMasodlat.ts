@@ -23,7 +23,7 @@ export const drawMasodlat = (
   const printedY = anchorY + 12 + cm(0.1);
 
   // Inverse label (black bg, white text)
-  doc.setFillColor(0);
+  doc.setFillColor(0, 0, 0);
   doc.setTextColor(255);
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(11);

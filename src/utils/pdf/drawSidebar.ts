@@ -1,50 +1,71 @@
 import { jsPDF } from 'jspdf';
-import { TalaltTargyLapData, PdfGroupBox, drawGroup } from './types';
+import { TalaltTargyLapData, cm } from './types';
 
 /**
  * 4. rész: Nyilvántartó függőleges sáv (jobb oldali fekete sáv)
- * Virtuális dobozban elhelyezve: startX=194, startY=47, width=10, height=163
- * A doboz pozíciójának módosításával az egész elem együtt mozgatható.
+ * Elforgatott fehér szöveggel
  */
-export const createSidebarBox = (): PdfGroupBox => ({
-  startX: 194,
-  startY: 47,
-  width: 10,
-  height: 163,
-});
-
 export const drawSidebar = (
   doc: jsPDF,
   data: TalaltTargyLapData,
-  box: PdfGroupBox
+  pageWidth: number
 ) => {
   const { targyNev, datum, azonosito } = data;
+  const itemId = azonosito.toUpperCase();
+  const BULLET = '\u2022';
 
-  drawGroup(doc, box, (doc, offsetX, offsetY, width, height) => {
-    // Fekete háttér téglalap
-    doc.setFillColor(0, 0, 0);
-    doc.rect(offsetX, offsetY, width, height, 'F');
+  const barThickness = cm(1);
+  const barX = pageWidth - cm(0.6) - barThickness;
+  const barY = cm(4); // starts at top separator
+  const barLength = cm(17);
 
-    // Fehér szöveg, elforgatva - egyetlen összefűzött sor
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(9);
-    doc.setFont('Roboto', 'bold');
+  // Draw black bar
+  doc.setFillColor(0, 0, 0);
+  doc.rect(barX, barY, barThickness, barLength, 'F');
 
-    const sidebarText = `${datum}  –  ${targyNev}  –  ${azonosito}`;
+  // White text, rotated 90°
+  doc.setTextColor(255);
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(12);
 
-    // A szöveg szélességét kézzel számoljuk ki a függőleges középre igazításhoz,
-    // mert az align:'center' + angle:90 együtt hibásan tolja el az x koordinátát.
-    const textWidth = doc.getTextWidth(sidebarText);
-    const centerX = offsetX + width / 2 + 0.5;
-    const midY = offsetY + height / 2;
-    // 90° CCW forgatásnál a szöveg felfelé halad az anchor ponttól,
-    // ezért az anchor Y = közép + félszövegszélesség
-    const textY = midY + textWidth / 2;
+  const inset = cm(0.2);
+  const textX = barX + barThickness / 2 + cm(0.15);
+  const centerY = barY + barLength / 2;
 
-    doc.text(sidebarText, centerX, textY, { angle: 90 });
+  // Build the line with space-based tab simulation
+  const spaceW = doc.getTextWidth(' ');
+  const leftPos = barY + inset;
+  const centerPos = barY + barLength / 2;
+  const rightPos = barY + barLength - inset;
 
-    // Színek visszaállítása
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('Roboto', 'normal');
-  });
+  const leftText = targyNev ? (datum ? `${targyNev} ${BULLET}` : targyNev) : '';
+  const midText = datum || '';
+  const rightText = itemId ? (datum ? `${BULLET} ${itemId}` : itemId) : '';
+
+  let line = leftText;
+  let cursor = leftText ? leftPos + doc.getTextWidth(leftText) : leftPos;
+
+  if (midText) {
+    const targetStart = centerPos - doc.getTextWidth(midText) / 2;
+    const needed = Math.max(0, targetStart - cursor);
+    const spaces = Math.max(1, Math.round(needed / spaceW));
+    line += ' '.repeat(spaces) + midText;
+    cursor = targetStart + doc.getTextWidth(midText);
+  }
+
+  if (rightText) {
+    const targetStart = rightPos - doc.getTextWidth(rightText);
+    const needed = Math.max(0, targetStart - cursor);
+    const spaces = Math.max(1, Math.round(needed / spaceW));
+    line += ' '.repeat(spaces) + rightText;
+  }
+
+  const textWidth = doc.getTextWidth(line);
+  const yCentered = centerY + textWidth / 2;
+
+  doc.text(line, textX, yCentered, undefined, 90);
+
+  // Reset colors
+  doc.setTextColor(0);
+  doc.setFont('Roboto', 'normal');
 };

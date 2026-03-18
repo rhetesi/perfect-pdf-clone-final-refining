@@ -1,59 +1,60 @@
 import { jsPDF } from 'jspdf';
-import { TalaltTargyLapData, PdfLayout, drawSolidLine } from './types';
+import {
+  TalaltTargyLapData,
+  PdfLayout,
+  cm,
+  drawWrappedText,
+  drawJustifiedParagraph,
+  drawCenteredLine,
+  getFounderLine,
+  getCompanyName,
+} from './types';
 
 /**
  * 3. rész: Átvételi elismervény (alsó rész)
- * Függőleges pozíció: 222mm - 291mm (69mm magas terület)
+ * Az alsó elválasztó vonal (21cm) alatt
  */
 export const drawElismerveny = (
   doc: jsPDF,
   data: TalaltTargyLapData,
   layout: PdfLayout
 ) => {
-  const {
-    targyNev,
-    targyLeiras,
-    datum,
-    talaloNev = 'Név',
-    talaloLakcim = 'lakcím',
-  } = data;
+  const { targyNev, targyLeiras, datum } = data;
+  const companyName = getCompanyName(data);
+  const founderLine = getFounderLine(data);
 
-  let y = layout.elismTop; // 222mm
+  // Start below bottom separator + offset
+  let y = layout.bottomSeparatorY + cm(0.8) + 6;
 
-  doc.setFontSize(18);
-  doc.setFont('Roboto', 'bolditalic');
-  doc.text('Átvételi elismervény', layout.marginLeft, y + 5);
-
-  y += 12;
-
-  doc.setFontSize(10);
+  // Title
   doc.setFont('Roboto', 'bold');
-  doc.text(targyNev, layout.marginLeft, y);
+  doc.setFontSize(20);
+  doc.text('Átvételi elismervény', layout.marginLeft, y);
+  y += 20;
+
+  // Item info
   doc.setFont('Roboto', 'normal');
-  doc.text(targyLeiras, layout.marginLeft, y + 4);
+  doc.setFontSize(10.5);
+  y = drawWrappedText(doc, targyNev, layout.marginLeft, y, layout.contentWidth, 14);
+  y = drawWrappedText(doc, targyLeiras, layout.marginLeft, y, layout.contentWidth, 14);
 
-  y += 15;
+  y += 20;
 
+  // Founder line
   doc.setFont('Roboto', 'bold');
-  doc.text(`${talaloNev} (${talaloLakcim})`, layout.marginLeft, y);
+  y = drawWrappedText(doc, founderLine, layout.marginLeft, y, layout.contentWidth, 14);
+
+  // Receipt paragraph (justified)
   doc.setFont('Roboto', 'normal');
+  const para3 = `A ${companyName} (továbbiakban: Vállalkozás) képviseletében elismerem, hogy a fent megnevezett tárgyat, megnevezett találótól átvettem. Egyben tájékoztattam a találót, hogy ezen átvételi elismervény NEM jogosít a talált tárgy találó részére történő kiadására.`;
+  y = drawJustifiedParagraph(doc, para3, layout.marginLeft, y, layout.contentWidth, 14) + 8;
 
-  y += 5;
+  // Signature row
+  y += 22;
+  doc.text(datum, layout.tab1, y, { align: 'center' });
+  drawCenteredLine(doc, layout.tab3, y, layout.signLineWidth);
 
-  const receiptText = 'A „cég" képviseletében elismerem, hogy a fent megnevezett tárgyat, megnevezett találótól átvettük. Egyben tájékoztattam a találót, hogy ezen átvételi elismervény NEM jogosít a talált tárgy találó részére történő kiadására.';
-  const splitReceipt = doc.splitTextToSize(receiptText, layout.contentWidth);
-  doc.text(splitReceipt, layout.marginLeft, y);
-
-  y += splitReceipt.length * layout.lineHeight + 6;
-
-  // Alsó aláírás sor
-  doc.setFontSize(10);
-  doc.setFont('Roboto', 'normal');
-  doc.text(datum, layout.marginLeft, y);
-
-  // ph és aláírás jobb oldalon
-  doc.text('ph', layout.contentRight - 50, y);
-  drawSolidLine(doc, layout.contentRight - 40, y, layout.contentRight);
-  doc.setFontSize(9);
-  doc.text('Név', layout.contentRight - 20, y + 4, { align: 'center' });
+  y += 16;
+  doc.text('ph', layout.tab2, y, { align: 'center' });
+  doc.text('Vállalkozás képviselője', layout.tab3, y, { align: 'center' });
 };

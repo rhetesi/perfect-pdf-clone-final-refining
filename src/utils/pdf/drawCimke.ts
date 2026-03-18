@@ -1,9 +1,9 @@
 import { jsPDF } from 'jspdf';
-import { TalaltTargyLapData, PdfLayout } from './types';
+import { TalaltTargyLapData, PdfLayout, cm, drawWrappedText } from './types';
 
 /**
  * 1. rész: Nyilvántartó címke QR kóddal
- * Függőleges pozíció: 6mm - 35mm (29mm magas terület)
+ * A felső elválasztó vonal (4cm) felett
  */
 export const drawCimke = (
   doc: jsPDF,
@@ -11,27 +11,42 @@ export const drawCimke = (
   layout: PdfLayout,
   qrDataUrl: string
 ) => {
-  const { targyNev, targyLeiras, helyszin, datum, azonosito } = data;
-  const fullDatum = `${helyszin}, ${datum}`;
+  const { targyNev, targyLeiras, azonosito } = data;
 
-  const y = layout.cimkeTop + 5; // 6mm + 5mm lejjebb
+  // Start position
+  let y = layout.marginTop + cm(0.2) + 20;
+  const firstTitleY = y;
 
-  doc.setFontSize(18);
-  doc.setFont('Roboto', 'bolditalic');
-  doc.text(targyNev, layout.marginLeft, y + 6);
+  // Item name - bold, 20pt
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(20);
+  y = drawWrappedText(doc, targyNev, layout.marginLeft, y, layout.contentWidth, 24);
 
-  doc.setFontSize(10);
+  // Details
   doc.setFont('Roboto', 'normal');
-  doc.text(targyLeiras, layout.marginLeft, y + 11);
-  doc.text(fullDatum, layout.marginLeft, y + 15);
+  doc.setFontSize(10.5);
+  y = drawWrappedText(doc, targyLeiras, layout.marginLeft, y, layout.contentWidth, 14);
 
-  // QR Code
-  const qrSize = 20;
-  const qrX = layout.contentRight - qrSize;
-  const qrY = y;
-  doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+  // Place + date
+  const placeDate = data.helyszin && data.datum
+    ? `${data.helyszin}, ${data.datum}`
+    : data.helyszin || data.datum;
+  y = drawWrappedText(doc, placeDate, layout.marginLeft, y, layout.contentWidth, 14);
 
-  // Identifier right-aligned under QR
-  doc.setFontSize(10);
-  doc.text(azonosito, layout.contentRight, y + 24, { align: 'right' });
+  // Identifier right-aligned
+  y += 14;
+  doc.text(azonosito.toUpperCase(), layout.rightX, y, { align: 'right' });
+
+  // QR Code (2.5cm square), aligned to right margin, top edge at title top
+  const qrSize = cm(2.5);
+  const titleLines = doc.splitTextToSize(targyNev || '', layout.contentWidth);
+  const titleFirstLine = titleLines[0] || '';
+  const titleDims = doc.getTextDimensions(titleFirstLine);
+  const titleTop = firstTitleY - titleDims.h;
+  const qrX = layout.rightX - qrSize;
+  const qrY = titleTop - cm(0.3);
+
+  if (azonosito) {
+    doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+  }
 };

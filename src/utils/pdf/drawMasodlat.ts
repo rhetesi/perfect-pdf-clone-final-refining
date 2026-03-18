@@ -1,54 +1,44 @@
 import { jsPDF } from 'jspdf';
-import { TalaltTargyLapData, PdfGroupBox, drawGroup } from './types';
+import { cm, formatCurrentDateHu } from './types';
 
 /**
- * 5. rész: MÁSODLAT rész (bekeretezett szövegmező)
- * Virtuális dobozban elhelyezve, így a pozíciója egyszerűen módosítható.
- * Alapértelmezett pozíció: a nyilvántartási lap jobb felső sarka.
+ * 5. rész: MÁSODLAT blokk (feltételes overlay)
+ * Csak akkor jelenik meg, ha data.duplicate === true
  */
-export const createMasodlatBox = (): PdfGroupBox => ({
-  startX: 140,
-  startY: 47,
-  width: 50,
-  height: 22,
-});
-
 export const drawMasodlat = (
   doc: jsPDF,
-  data: TalaltTargyLapData,
-  box: PdfGroupBox
+  rightX: number,
+  anchorY: number
 ) => {
-  const { azonosito, nyomtatasDatum } = data;
+  const label = 'MÁSODLAT!';
+  const printedText = `Nyomtatva: ${formatCurrentDateHu()}`;
 
-  drawGroup(doc, box, (doc, offsetX, offsetY, width, height) => {
-    // Keret rajzolása a teljes doboz körül
-    doc.setDrawColor(150, 150, 150);
-    doc.setLineWidth(0.3);
-    doc.setLineDashPattern([1, 1], 0);
-    doc.rect(offsetX, offsetY, width, height);
-    doc.setLineDashPattern([], 0);
-    doc.setDrawColor(0, 0, 0);
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(11);
+  const labelW = doc.getTextWidth(label);
+  const labelDims = doc.getTextDimensions(label);
+  const spaceW = doc.getTextWidth(' ');
 
-    // MÁSODLAT! felirat (inverz: fekete háttér, fehér szöveg)
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(10);
-    const masodlatText = 'MÁSODLAT!';
-    const masodlatTextWidth = doc.getTextWidth(masodlatText) + 6;
-    const masodlatX = offsetX + width - masodlatTextWidth - 2;
-    const masodlatY = offsetY + 4;
-    doc.setFillColor(0, 0, 0);
-    doc.rect(masodlatX, masodlatY, masodlatTextWidth, 5, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.text(masodlatText, masodlatX + 3, masodlatY + 3.5);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('Roboto', 'normal');
+  const labelY = anchorY + cm(0.1);
+  const printedY = anchorY + 12 + cm(0.1);
 
-    // Nyomtatás dátuma
-    doc.setFontSize(9);
-    doc.text(`Nyomtatva: ${nyomtatasDatum}`, offsetX + width - 2, offsetY + 14, { align: 'right' });
+  // Inverse label (black bg, white text)
+  doc.setFillColor(0);
+  doc.setTextColor(255);
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(11);
 
-    // Azonosító
-    doc.setFontSize(9);
-    doc.text(azonosito, offsetX + width - 2, offsetY + 19, { align: 'right' });
-  });
+  const rectW = labelW + spaceW * 2;
+  const rectX = rightX - rectW;
+  const rectY = labelY - labelDims.h + 2 - cm(0.1);
+  doc.rect(rectX, rectY, rectW, labelDims.h + 4, 'F');
+
+  const labelTextX = rectX + rectW - spaceW;
+  doc.text(label, labelTextX, labelY, { align: 'right' });
+
+  // Print date
+  doc.setTextColor(0);
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.text(printedText, rightX, printedY, { align: 'right' });
 };

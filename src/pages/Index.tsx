@@ -13,6 +13,8 @@ const Index = () => {
     nyomtatasDatum: "2026. 01. 31.",
     talaloNev: "Név",
     talaloLakcim: "lakcím",
+    companyName: "CÉG",
+    duplicate: true,
   };
 
   const handleDownloadPdf = () => {
